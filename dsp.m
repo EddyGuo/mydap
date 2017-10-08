@@ -160,11 +160,7 @@ else
     guidata(hObject,handles);%储存handles
     set(handles.play_pushbutton,'enable','on');
     set(handles.play_stop_pushbutton,'enable','on');
-    plot(handles.axes1,handles.Sample,'g');%绘制时域波形
-    plot(handles.axes2,fft(handles.Sample),'r');
-    set(handles.axes1,'color','k');
-    set(handles.axes2,'color','k');
-     
+    audio_analyze(handles); 
 end
 
 
@@ -203,10 +199,7 @@ set(handles.play_stop_pushbutton,'enable','on');
 handles.Sample=getaudiodata(handles.recObj);%获取录音
 handles.player=audioplayer(handles.Sample,handles.Fs);%创建一个播放器
 guidata(hObject,handles);
-plot(handles.axes1,handles.Sample,'g');%绘制时域波形
-plot(handles.axes2,fft(handles.Sample),'r');
-set(handles.axes1,'color','k');
-set(handles.axes2,'color','k');
+audio_analyze(handles);
 % --- Executes during object deletion, before destroying properties.
 
 
