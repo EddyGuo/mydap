@@ -22,7 +22,7 @@ function varargout = dsp(varargin)
 
 % Edit the above text to modify the response to help dsp
 
-% Last Modified by GUIDE v2.5 07-Oct-2017 22:48:27
+% Last Modified by GUIDE v2.5 09-Oct-2017 13:18:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -160,7 +160,8 @@ else
     guidata(hObject,handles);%储存handles
     set(handles.play_pushbutton,'enable','on');
     set(handles.play_stop_pushbutton,'enable','on');
-    audio_analyze(handles); 
+    feval(@wave_select_listbox_Callback,handles.wave_select_listbox,eventdata,handles);
+    %调用wave_select_listbox_Callback,handles函数
 end
 
 
@@ -203,7 +204,8 @@ set(handles.record_stop_pushbutton,'enable','off');
 handles.Sample=getaudiodata(handles.recObj);%获取录音
 handles.player=audioplayer(handles.Sample,handles.Fs);%创建一个播放器
 guidata(hObject,handles);
-audio_analyze(handles);
+feval(@wave_select_listbox_Callback,handles.wave_select_listbox,eventdata,handles);
+%调用wave_select_listbox_Callback,handles函数
 % --- Executes during object deletion, before destroying properties.
 
 
@@ -237,4 +239,39 @@ switch get(hObject,'tag')
         set(handles.file_choose_pushbutton,'enable','on');
         set(handles.play_pushbutton,'enable','off');
         set(handles.play_stop_pushbutton,'enable','off');
+end
+
+
+% --- Executes on selection change in wave_select_listbox.
+function wave_select_listbox_Callback(hObject, eventdata, handles)
+% hObject    handle to wave_select_listbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns wave_select_listbox contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from wave_select_listbox
+handles.wavetype=get(hObject,'value');
+switch handles.wavetype
+    case 1
+        plot(handles.axes1,handles.Sample,'g');%绘制时域波形
+        set(handles.axes1,'color','k');
+    case 2
+        plot(handles.axes1,handles.Sample,'r');%绘制时域波形
+        set(handles.axes1,'color','k');
+    case 3
+    case 4
+    case 5
+    case 6
+end
+
+% --- Executes during object creation, after setting all properties.
+function wave_select_listbox_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to wave_select_listbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
