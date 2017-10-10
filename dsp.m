@@ -251,18 +251,39 @@ function wave_select_listbox_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns wave_select_listbox contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from wave_select_listbox
 handles.wavetype=get(hObject,'value');
+sample_length=length(handles.Sample);
+t=(0:sample_length-1)/handles.Fs;
 switch handles.wavetype
     case 1
-        plot(handles.axes1,handles.Sample,'g');%绘制时域波形
-        set(handles.axes1,'color','k');
+        %时域波形
+        plot(handles.axes1,t,handles.Sample,'g');
+        xlabel(handles.axes1,'时间(s)');
     case 2
-        plot(handles.axes1,handles.Sample,'r');%绘制时域波形
-        set(handles.axes1,'color','k');
+        %幅频曲线
+        fft_sample=abs(fft(handles.Sample,sample_length));%fft变换
+        %abs将fft变换后样本由复数变为实数
+        f=handles.Fs*(0:sample_length-1)/sample_length;%频率
+        plot(handles.axes1,f,fft_sample,'r');
+        xlabel(handles.axes1,'频率(Hz)');
     case 3
+        %相频曲线
+        phase_sample=angle(fft(handles.Sample,sample_length));%求相角
+        unwrap_phase_sample=unwrap(phase_sample);%unwrap使相角跳变不超过2pi
+        f=handles.Fs*(0:sample_length-1)/sample_length;
+        plot(handles.axes1,f,unwrap_phase_sample,'b');
+        xlabel(handles.axes1,'频率(Hz)');
     case 4
+        %瀑布频谱图
     case 5
+        %音压曲线
+        audio_db=20*log10(abs(handles.Sample));%求音压
+        plot(handles.axes1,t,audio_db,'c');
+        xlabel(handles.axes1,'时间(s)');
+        ylabel(handles.axes1,'音压(DB)');
     case 6
 end
+set(handles.axes1,'Color','k','XColor','[0.5,0.5,0.5]','YColor','[0.5,0.5,0.5]','ZColor','[0.5,0.5,0.5]');
+grid on;
 
 % --- Executes during object creation, after setting all properties.
 function wave_select_listbox_CreateFcn(hObject, eventdata, handles)
