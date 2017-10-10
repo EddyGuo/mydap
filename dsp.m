@@ -274,6 +274,10 @@ switch handles.wavetype
         xlabel(handles.axes1,'ÆµÂÊ(Hz)');
     case 4
         %ÆÙ²¼ÆµÆ×Í¼
+        axes(handles.axes1);
+        hammingwin=2^floor(log2(sample_length))/8;
+        spectrogram(handles.Sample,hammingwin,hammingwin/2,sample_length,handles.Fs);
+        set(colorbar,'Color','[0.5,0.5,0.5]');
     case 5
         %ÒôÑ¹ÇúÏß
         audio_db=20*log10(abs(handles.Sample));%ÇóÒôÑ¹
