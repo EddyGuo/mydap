@@ -8,7 +8,7 @@ switch wavetype
         plot(handles.axes1,t,handles.Sample,'g');
         xlabel(handles.axes1,'时间(s)');
     case 2
-        %幅频曲线
+        %频率响应曲线
         fft_sample=fft(handles.Sample,nfft);
         y=fft_sample.*conj(fft_sample)/nfft;%Parseval定理求功率
         %由于fft得到共轭对称的两部分分量，幅值为时域的一半（除了0处直流分量）
@@ -19,7 +19,7 @@ switch wavetype
         xlabel(handles.axes1,'频率(Hz)');
         ylabel(handles.axes1,'功率');
     case 3
-        %幅频曲线(DB)
+        %频率响应曲线(DB)
         fft_sample=fft(handles.Sample,nfft);
         y=fft_sample.*conj(fft_sample)/nfft;
         y1=10*log10(y);

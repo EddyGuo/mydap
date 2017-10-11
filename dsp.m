@@ -179,7 +179,7 @@ handles.recObj=audiorecorder(sample_frequency,16,1);%创建一个录音器
 record(handles.recObj);%开始录音
 handles.inputtype=1;%输入音频方式设为1
 guidata(hObject,handles);
-set(handles.record_start_pushbutton,'enable','off');
+set(hObject,'enable','off');
 set(handles.record_stop_pushbutton,'enable','on');
 
 % --- Executes on button press in play_pushbutton.
@@ -188,6 +188,7 @@ function play_pushbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 play(handles.player);%开始播放
+set(hObject,'enable','off');
 playblocking(handles.player);%播放结束自动停止
 
 
@@ -200,7 +201,7 @@ stop(handles.recObj);%停止录音
 set(handles.play_pushbutton,'enable','on');
 set(handles.play_stop_pushbutton,'enable','on');
 set(handles.record_start_pushbutton,'enable','on');
-set(handles.record_stop_pushbutton,'enable','off');
+set(hObject,'enable','off');
 handles.Sample=getaudiodata(handles.recObj);%获取录音
 handles.player=audioplayer(handles.Sample,handles.Fs);%创建一个播放器
 guidata(hObject,handles);
@@ -215,6 +216,7 @@ function play_stop_pushbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 stop(handles.player);%停止播放
+set(handles.play_pushbutton,'enable','on');
 
 
 % --- Executes when selected object is changed in uibuttongroup1.
