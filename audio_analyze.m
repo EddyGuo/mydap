@@ -10,26 +10,26 @@ switch wavetype
     case 2
         %频率响应曲线
         fft_sample=fft(handles.Sample,nfft);
-        y=fft_sample.*conj(fft_sample)/nfft;%Parseval定理求功率
+        y=abs(fft_sample)/nfft;
         %由于fft得到共轭对称的两部分分量，幅值为时域的一半（除了0处直流分量）
         y0=fftshift(y);%循环移位，取中间为0
         %The fftshift function rearranges the output from fft with a circular shift to produce a 0-centered periodogram.
         f0=(-nfft/2:nfft/2-1)*(handles.Fs/nfft);
         plot(handles.axes1,f0,y0,'r');
         xlabel(handles.axes1,'频率(Hz)');
-        ylabel(handles.axes1,'功率');
-    case 3
-        %频率响应曲线(DB)
+        ylabel(handles.axes1,'幅值');
+    case 4
+        %能量谱
         fft_sample=fft(handles.Sample,nfft);
-        y=fft_sample.*conj(fft_sample)/nfft;
+        y=abs(fft_sample).^2/nfft;%Parseval定理求能量
         y1=10*log10(y);
         y2=y1(1:nfft/2+1);%取频谱一半
         y2(2:end-1)=2*y2(2:end-1);%直流分量保持不变,其他乘2
         f=handles.Fs*(0:(nfft/2))/nfft;
         plot(handles.axes1,f,y2,'y');
         xlabel(handles.axes1,'频率(Hz)');
-        ylabel(handles.axes1,'功率(DB)');
-    case 4
+        ylabel(handles.axes1,'谱密度(DB/Hz)');
+    case 3
         %相频曲线
         fft_sample=fft(handles.Sample,nfft);
         f0=(-nfft/2:nfft/2-1)*(handles.Fs/nfft);
