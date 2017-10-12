@@ -22,7 +22,7 @@ function varargout = dsp(varargin)
 
 % Edit the above text to modify the response to help dsp
 
-% Last Modified by GUIDE v2.5 10-Oct-2017 22:53:50
+% Last Modified by GUIDE v2.5 12-Oct-2017 23:11:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,13 +59,20 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % UIWAIT makes dsp wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handles.dsp_figure);
 
 %设置默认颜色
-set(groot,'defaultAxesColor','k');
-set(groot,'defaultAxesXColor','[0.5,0.5,0.5]');
-set(groot,'defaultAxesYColor','[0.5,0.5,0.5]');
-set(groot,'defaultAxesZColor','[0.5,0.5,0.5]');
+set(gcf,'defaultAxesColor','k');
+set(gcf,'defaultAxesXColor','[0.5,0.5,0.5]');
+set(gcf,'defaultAxesYColor','[0.5,0.5,0.5]');
+set(gcf,'defaultAxesZColor','[0.5,0.5,0.5]');
+set(gcf,'defaultAxesGridColor','w');
+
+%创建一个空Sample
+handles.Sample=[];
+guidata(hObject, handles);
+
+
 
 % --- Outputs from this function are returned to the command line.
 function varargout = dsp_OutputFcn(hObject, eventdata, handles) 
@@ -119,19 +126,19 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on selection change in sample_frequency_popupmenu.
-function sample_frequency_popupmenu_Callback(hObject, eventdata, handles)
-% hObject    handle to sample_frequency_popupmenu (see GCBO)
+% --- Executes on selection change in fs_popupmenu.
+function fs_popupmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to fs_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns sample_frequency_popupmenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from sample_frequency_popupmenu
+% Hints: contents = cellstr(get(hObject,'String')) returns fs_popupmenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from fs_popupmenu
 
 
 % --- Executes during object creation, after setting all properties.
-function sample_frequency_popupmenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to sample_frequency_popupmenu (see GCBO)
+function fs_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fs_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -149,7 +156,7 @@ function file_choose_pushbutton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 [filename,pathname]=uigetfile({'*.wav;*.mp3;*.flac','音频文件(*.wav,*.mp3,*.flac)'},'选择文件');%弹出选择文件窗口
 %判断文件为空
-if isequal(filename,0)||isequal(pathname,0)
+if isempty(filename)||isempty(pathname)
     return
 else
     handles.Filepath=[pathname,filename];
@@ -175,12 +182,12 @@ function record_start_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to record_start_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-sample_frequency_list=get(handles.sample_frequency_popupmenu,'string');%获取列表
-sample_frequency_value=get(handles.sample_frequency_popupmenu,'value');%获取参数序号
-sample_frequency=str2double(sample_frequency_list{sample_frequency_value});%获取选定采样率
+fs_list=get(handles.fs_popupmenu,'string');%获取列表
+fs_value=get(handles.fs_popupmenu,'value');%获取参数序号
+fs=str2double(fs_list{fs_value});%获取选定采样率
 %list类型为cell必须转换
-handles.Fs=sample_frequency;
-handles.recObj=audiorecorder(sample_frequency,16,1);%创建一个录音器
+handles.Fs=fs;
+handles.recObj=audiorecorder(fs,16,1);%创建一个录音器
 record(handles.recObj);%开始录音
 handles.inputtype=1;%输入音频方式设为1
 guidata(hObject,handles);
@@ -230,7 +237,7 @@ function uibuttongroup1_SelectionChangedFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 switch get(hObject,'tag')
     case 'record_radiobutton'
-        set(handles.sample_frequency_popupmenu,'enable','on');
+        set(handles.fs_popupmenu,'enable','on');
         set(handles.record_start_pushbutton,'enable','on');
         set(handles.record_stop_pushbutton,'enable','off');
         set(handles.filepath_edit,'enable','off');
@@ -238,7 +245,7 @@ switch get(hObject,'tag')
         set(handles.play_pushbutton,'enable','off');
         set(handles.play_stop_pushbutton,'enable','off');
     case 'file_radiobutton'
-        set(handles.sample_frequency_popupmenu,'enable','off');
+        set(handles.fs_popupmenu,'enable','off');
         set(handles.record_start_pushbutton,'enable','off');
         set(handles.record_stop_pushbutton,'enable','off');
         set(handles.filepath_edit,'enable','on');
@@ -257,7 +264,9 @@ function wave_select_listbox_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns wave_select_listbox contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from wave_select_listbox
 wavetype=get(hObject,'value');
+if ~isempty(handles.Sample)
 audio_analyze(wavetype,handles);
+end
 
 % --- Executes during object creation, after setting all properties.
 function wave_select_listbox_CreateFcn(hObject, eventdata, handles)

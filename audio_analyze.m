@@ -34,7 +34,7 @@ switch wavetype
         fft_sample=fft(handles.Sample,nfft);
         f0=(-nfft/2:nfft/2-1)*(handles.Fs/nfft);
         ph_y0=fftshift(fft_sample);
-        phase=unwrap(angle(ph_y0));%矫正跳变范围为[-pi,pi]
+        phase=unwrap(angle(ph_y0));%矫正相角跳变范围在pi以内
         plot(handles.axes1,f0,phase,'b');
         xlabel(handles.axes1,'频率(Hz)');
     case 5
@@ -50,6 +50,5 @@ switch wavetype
         xlabel(handles.axes1,'时间(s)');
         ylabel(handles.axes1,'音压(DB)');
 end
-
 grid on;
     
