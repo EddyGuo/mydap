@@ -42,7 +42,7 @@ switch wavetype
         axes(handles.axes1);
         hammingwin=2^floor(log2(sample_length))/8;
         spectrogram(handles.Sample,hammingwin,hammingwin/2,nfft,handles.Fs);
-        set(colorbar,'Color','[0.5,0.5,0.5]');
+        colormap(hot);
     case 6
         %“Ù—π«˙œﬂ
         audio_db=20*log10(abs(handles.Sample));%«Û“Ù—π
@@ -50,6 +50,6 @@ switch wavetype
         xlabel(handles.axes1,' ±º‰(s)');
         ylabel(handles.axes1,'“Ù—π(DB)');
 end
-set(handles.axes1,'Color','k','XColor','[0.5,0.5,0.5]','YColor','[0.5,0.5,0.5]','ZColor','[0.5,0.5,0.5]');
+
 grid on;
     

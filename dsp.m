@@ -61,6 +61,11 @@ guidata(hObject, handles);
 % UIWAIT makes dsp wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+%设置默认颜色
+set(groot,'defaultAxesColor','k');
+set(groot,'defaultAxesXColor','[0.5,0.5,0.5]');
+set(groot,'defaultAxesYColor','[0.5,0.5,0.5]');
+set(groot,'defaultAxesZColor','[0.5,0.5,0.5]');
 
 % --- Outputs from this function are returned to the command line.
 function varargout = dsp_OutputFcn(hObject, eventdata, handles) 
@@ -189,7 +194,6 @@ function play_pushbutton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 play(handles.player);%开始播放
 set(hObject,'enable','off');
-playblocking(handles.player);%播放结束自动停止
 
 
 % --- Executes on button press in record_stop_pushbutton.
