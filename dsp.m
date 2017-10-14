@@ -46,11 +46,6 @@ end
 
 % --- Executes just before dsp is made visible.
 function dsp_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to dsp (see VARARGIN)
 
 % Choose default command line output for dsp
 handles.output = hObject;
@@ -61,66 +56,38 @@ guidata(hObject, handles);
 % UIWAIT makes dsp wait for user response (see UIRESUME)
 % uiwait(handles.dsp_figure);
 
-%设置默认颜色
-set(gcf,'defaultAxesColor','k');
-set(gcf,'defaultAxesXColor','[0.5,0.5,0.5]');
-set(gcf,'defaultAxesYColor','[0.5,0.5,0.5]');
-set(gcf,'defaultAxesZColor','[0.5,0.5,0.5]');
-set(gcf,'defaultAxesGridColor','w');
+% 设置默认颜色
+set(gcf,'defaultAxesColor','k',...
+    'defaultAxesXColor','[0.5,0.5,0.5]', ...
+    'defaultAxesYColor','[0.5,0.5,0.5]', ...
+    'defaultAxesZColor','[0.5,0.5,0.5]', ...
+    'defaultAxesGridColor','w');
 
-%创建一个空Sample
+% 创建一个空Sample
 handles.Sample=[];
 guidata(hObject, handles);
 
 
-
 % --- Outputs from this function are returned to the command line.
 function varargout = dsp_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
 % --- Executes on button press in record_radiobutton.
 function record_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to record_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of record_radiobutton
 
 
 % --- Executes on button press in file_radiobutton.
 function file_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to file_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of file_radiobutton
 
 
-
+% --- 显示文件路径
 function filepath_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to filepath_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of filepath_edit as text
-%        str2double(get(hObject,'String')) returns contents of filepath_edit as a double
 
 
 % --- Executes during object creation, after setting all properties.
 function filepath_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to filepath_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -128,93 +95,71 @@ end
 
 % --- Executes on selection change in fs_popupmenu.
 function fs_popupmenu_Callback(hObject, eventdata, handles)
-% hObject    handle to fs_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns fs_popupmenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from fs_popupmenu
 
 
 % --- Executes during object creation, after setting all properties.
 function fs_popupmenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to fs_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 
 % --- Executes on button press in file_choose_pushbutton.
+% --- 文件输入音频
 function file_choose_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to file_choose_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 [filename,pathname]=uigetfile({'*.wav;*.mp3;*.flac','音频文件(*.wav,*.mp3,*.flac)'},'选择文件');%弹出选择文件窗口
-%判断文件为空
+% 判断文件为空
 if isempty(filename)||isempty(pathname)
     return
 else
     handles.Filepath=[pathname,filename];
-    set(handles.filepath_edit,'string',handles.Filepath);%显示文件名
-    [handles.Sample,handles.Fs]=audioread(handles.Filepath);%读取音频文件
-    %若输入音频为双声道，则使用一个通道
+    set(handles.filepath_edit,'string',handles.Filepath);% 显示文件名
+    [handles.Sample,handles.Fs]=audioread(handles.Filepath);% 读取音频文件
+    % 若输入音频为双声道，则使用一个通道
     samplesize=size(handles.Sample);
     if samplesize(2)>1
         handles.Sample=handles.Sample(:,1);
     end
-    handles.inputtype=2;%输入方式为设为2
+    handles.inputtype=2;% 输入方式为设为2
     handles.player=audioplayer(handles.Sample,handles.Fs);
-    guidata(hObject,handles);%储存handles
+    guidata(hObject,handles);% 储存handles
     set(handles.play_pushbutton,'enable','on');
     set(handles.play_stop_pushbutton,'enable','on');
     feval(@wave_select_listbox_Callback,handles.wave_select_listbox,eventdata,handles);
-    %调用wave_select_listbox_Callback,handles函数
+    % 调用wave_select_listbox_Callback,handles函数
 end
 
 
 % --- Executes on button press in record_start_pushbutton.
+% --- 录音按钮
 function record_start_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to record_start_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-fs_list=get(handles.fs_popupmenu,'string');%获取列表
-fs_value=get(handles.fs_popupmenu,'value');%获取参数序号
-fs=str2double(fs_list{fs_value});%获取选定采样率
-%list类型为cell必须转换
+fs_list=get(handles.fs_popupmenu,'string');% 获取列表
+fs_value=get(handles.fs_popupmenu,'value');% 获取参数序号
+fs=str2double(fs_list{fs_value});% 获取选定采样率
+% list类型为cell必须转换
 handles.Fs=fs;
-handles.recObj=audiorecorder(fs,16,1);%创建一个录音器
-record(handles.recObj);%开始录音
-handles.inputtype=1;%输入音频方式设为1
+handles.recObj=audiorecorder(fs,16,1);% 创建一个录音器
+record(handles.recObj);% 开始录音
+handles.inputtype=1;% 输入音频方式设为1
 guidata(hObject,handles);
 set(hObject,'enable','off');
 set(handles.record_stop_pushbutton,'enable','on');
 
 % --- Executes on button press in play_pushbutton.
+% --- 播放按钮
 function play_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to play_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-play(handles.player);%开始播放
-set(hObject,'enable','off');
-
+play(handles.player);% 开始播放
 
 % --- Executes on button press in record_stop_pushbutton.
+% --- 停止录音按钮
 function record_stop_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to record_stop_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-stop(handles.recObj);%停止录音
+stop(handles.recObj);% 停止录音
 set(handles.play_pushbutton,'enable','on');
 set(handles.play_stop_pushbutton,'enable','on');
 set(handles.record_start_pushbutton,'enable','on');
 set(hObject,'enable','off');
-handles.Sample=getaudiodata(handles.recObj);%获取录音
-handles.player=audioplayer(handles.Sample,handles.Fs);%创建一个播放器
+handles.Sample=getaudiodata(handles.recObj);% 获取录音
+handles.player=audioplayer(handles.Sample,handles.Fs);% 创建一个播放器
 guidata(hObject,handles);
 feval(@wave_select_listbox_Callback,handles.wave_select_listbox,eventdata,handles);
 %调用wave_select_listbox_Callback,handles函数
@@ -222,19 +167,15 @@ feval(@wave_select_listbox_Callback,handles.wave_select_listbox,eventdata,handle
 
 
 % --- Executes on button press in play_stop_pushbutton.
+% --- 停止播放按钮
 function play_stop_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to play_stop_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-stop(handles.player);%停止播放
+stop(handles.player);% 停止播放
 set(handles.play_pushbutton,'enable','on');
 
 
 % --- Executes when selected object is changed in uibuttongroup1.
+% --- 输入方式按钮组
 function uibuttongroup1_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in uibuttongroup1 
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 switch get(hObject,'tag')
     case 'record_radiobutton'
         set(handles.fs_popupmenu,'enable','on');
@@ -256,13 +197,8 @@ end
 
 
 % --- Executes on selection change in wave_select_listbox.
+% --- 波形选择栏
 function wave_select_listbox_Callback(hObject, eventdata, handles)
-% hObject    handle to wave_select_listbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns wave_select_listbox contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from wave_select_listbox
 wavetype=get(hObject,'value');
 if ~isempty(handles.Sample)
 audio_analyze(wavetype,handles);
@@ -270,12 +206,6 @@ end
 
 % --- Executes during object creation, after setting all properties.
 function wave_select_listbox_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to wave_select_listbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
