@@ -31,6 +31,7 @@ set(gcf,'defaultAxesColor','k',...
 
 % 初始化
 handles.Sample=[];
+handles.index=0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -101,6 +102,7 @@ guidata(hObject,handles);
 function record_stop_pushbutton_Callback(hObject, eventdata, handles)
 stop(handles.recObj);% 停止录音
 handles.Sample=getaudiodata(handles.recObj);% 获取录音
+handles.index=handles.index+1;
 handles.player=audioplayer(handles.Sample,handles.Fs);
 setplayer(eventdata,handles);
 
@@ -113,7 +115,7 @@ guidata(hObject,handles);
 
 % --- 播放器设置
 function setplayer(eventdata,handles)
-% 创建播放回调函数
+% 创建player回调函数
 set(handles.player,'StartFcn',{@playstart_Callback,handles}, ...
         'StopFcn',{@playstop_Callback,handles});
 % plot wave
