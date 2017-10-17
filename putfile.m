@@ -22,7 +22,7 @@ function varargout = putfile(varargin)
 
 % Edit the above text to modify the response to help putfile
 
-% Last Modified by GUIDE v2.5 17-Oct-2017 01:51:26
+% Last Modified by GUIDE v2.5 17-Oct-2017 19:03:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -52,14 +52,12 @@ function putfile_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to putfile (see VARARGIN)
 movegui(gcf,'center');
-% Choose default command line output for putfile
-handles.putSample=varargin{1};
-
+handles.putSample=varargin{1}; %保存输入
 % Update handles structure
 guidata(hObject, handles);
 
 % UIWAIT makes putfile wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+% uiwait(handles.figure1); % 等待输出响应
 
 
 % --- Outputs from this function are returned to the command line.
@@ -70,15 +68,19 @@ function varargout = putfile_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+varargout{1} = 0; % 不需要输出
 
 
+% --- 读取文件夹
 function position_pushbutton_Callback(hObject, eventdata, handles)
-handles.foldername=uigetdir();
-set(handles.position_edit,'String',handles.foldername);
-
-guidata(hObject, handles);
-
+foldername=uigetdir();
+if foldername==0
+    return
+else
+    set(handles.position_edit,'String',foldername);
+    
+    guidata(hObject, handles);
+end
 function position_edit_Callback(hObject, eventdata, handles)
 
 
@@ -138,12 +140,16 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
+% --- 重置
 function reset_pushbutton_Callback(hObject, eventdata, handles)
+set(handles.position_edit,'String','');
+set(handles.filename_edit,'String','');
+set(handles.format_popupmenu,'Value',1);
+set(handles.Fs_popupmenu,'Value',1);
+set(handles.bps_popupmenu,'Value',1);
 
-
+% --- 生成音频
 function generate_pushbutton_Callback(hObject, eventdata, handles)
-set(handles.position_edit,'String',handles.foldername);
 filename=get(handles.filename_edit,'String');
 format_str=get(handles.format_popupmenu,'String');
 format_val=get(handles.format_popupmenu,'Value');
@@ -154,12 +160,21 @@ Fs=str2double(Fs_str{Fs_val});
 bps_str=get(handles.bps_popupmenu,'String');
 bps_val=get(handles.bps_popupmenu,'Value');
 bps=str2double(bps_str{bps_val});
-audiowrite([handles.foldername,'\',filename,format], ...
-    handles.putSample, ...
-    Fs, ...
-    'BitsPerSample',bps);
-msgbox('生成完成');
-handles.output=1;
 
-guidata(hObject, handles);
-uiresume(handles.figure1);
+% 生成音频
+if isempty(filename)||isempty(handles.foldername)
+    set(handles.state_text,'String','请输入完整信息！');
+else
+    audiowrite([handles.foldername,'\',filename,format], ...
+        handles.putSample, ...
+        Fs, ...
+        'BitsPerSample',bps);
+    set(handles.state_text,'String','输出完成！');
+ 
+    guidata(hObject,handles);
+%    uiresume(gcf); %响应输出
+end
+
+% --- 取消
+function cancel_pushbutton_Callback(hObject, eventdata, handles)
+delete(gcf);
