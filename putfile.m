@@ -73,11 +73,11 @@ varargout{1} = 0; % 不需要输出
 
 % --- 读取文件夹
 function position_pushbutton_Callback(hObject, eventdata, handles)
-foldername=uigetdir();
-if foldername==0
+handles.foldername=uigetdir();
+if handles.foldername==0
     return
 else
-    set(handles.position_edit,'String',foldername);
+    set(handles.position_edit,'String',handles.foldername);
     
     guidata(hObject, handles);
 end
@@ -169,7 +169,6 @@ else
         handles.putSample, ...
         Fs, ...
         'BitsPerSample',bps);
-    set(handles.state_text,'String','输出完成！');
  
     guidata(hObject,handles);
 %    uiresume(gcf); %响应输出
