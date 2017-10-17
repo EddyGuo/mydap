@@ -22,13 +22,8 @@ function dsp_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for dsp
 handles.output = hObject;
 
-% …Ë÷√ƒ¨»œ—’…´
-set(gcf,'defaultAxesColor','k',...
-    'defaultAxesXColor','[0.5,0.5,0.5]', ...
-    'defaultAxesYColor','[0.5,0.5,0.5]', ...
-    'defaultAxesZColor','[0.5,0.5,0.5]', ...
-    'defaultAxesGridColor','w', ...
-    'defaultAxesXGrid','on', ...
+% …Ë÷√◊¯±Í÷·
+set(gcf,'defaultAxesXGrid','on', ...
     'defaultAxesYGrid','on', ...
     'defaultAxesZGrid','on');
 
@@ -205,3 +200,50 @@ set(handles.playstate_text,'String','◊¥Ã¨¿∏>');
 
 function putfile_pushbutton_Callback(hObject, eventdata, handles)
 putfile(handles.Sample); %  ‰≥ˆ“Ù∆µ
+
+
+function nmean_edit_Callback(hObject, eventdata, handles)
+
+function nmean_edit_CreateFcn(hObject, eventdata, handles)
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function dmean_edit_Callback(hObject, eventdata, handles)
+
+
+function dmean_edit_CreateFcn(hObject, eventdata, handles)
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function dvar_edit_Callback(hObject, eventdata, handles)
+
+
+function dvar_edit_CreateFcn(hObject, eventdata, handles)
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function nvar_edit_Callback(hObject, eventdata, handles)
+
+
+function nvar_edit_CreateFcn(hObject, eventdata, handles)
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
