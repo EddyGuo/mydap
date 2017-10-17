@@ -27,9 +27,13 @@ set(gcf,'defaultAxesColor','k',...
     'defaultAxesXColor','[0.5,0.5,0.5]', ...
     'defaultAxesYColor','[0.5,0.5,0.5]', ...
     'defaultAxesZColor','[0.5,0.5,0.5]', ...
-    'defaultAxesGridColor','w');
+    'defaultAxesGridColor','w', ...
+    'defaultAxesXGrid','on', ...
+    'defaultAxesYGrid','on', ...
+    'defaultAxesZGrid','on');
 
 % 初始化
+movegui(gcf,'center');
 handles.Sample=[];
 handles.index=0;
 
@@ -83,6 +87,10 @@ else
     handles.player=audioplayer(handles.Sample,handles.Fs);
     setplayer(handles);
     
+    set(handles.play_pushbutton,'enable','on');
+    set(handles.play_stop_pushbutton,'enable','on');
+    set(handles.putfile_pushbutton,'enable','on');
+    
     guidata(hObject,handles);
 end
 
@@ -119,6 +127,13 @@ function setplayer(handles)
 % 创建player回调函数
 set(handles.player,'StartFcn',{@playstart_Callback,handles}, ...
     'StopFcn',{@playstop_Callback,handles});
+
+% 音频信息
+sample_length=length(handles.Sample);
+t=sample_length/handles.Fs;
+set(handles.timeinfo_text,'String',['时长：',num2str(t),'s']);
+set(handles.fsinfo_text,'String',['采样率：',num2str(handles.Fs),'Hz']);
+
 % plot wave
 audio_analyze(handles);
 
@@ -155,7 +170,6 @@ end
 function wave_select_listbox_Callback(hObject, eventdata, handles)
 audio_analyze(handles);
 
-% --- Executes during object creation, after setting all properties.
 function wave_select_listbox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -185,4 +199,9 @@ set(handles.play_pushbutton,'enable','on');
 set(handles.play_stop_pushbutton,'enable','on');
 set(handles.record_start_pushbutton,'enable','on');
 set(handles.record_stop_pushbutton,'enable','off');
+set(handles.putfile_pushbutton,'enable','on');
 set(handles.playstate_text,'String','状态栏>');
+
+
+function putfile_pushbutton_Callback(hObject, eventdata, handles)
+putfile(handles.Sample); % 输出音频

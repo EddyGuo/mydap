@@ -44,7 +44,9 @@ if ~isempty(handles.Sample)
             axes(handles.axes1);
             hammingwin=2^floor(log2(sample_length))/8;
             spectrogram(handles.Sample,hammingwin,hammingwin/2,nfft,handles.Fs);
+            colorbar(handles.axes1);
             colormap(hot);
+            colorbar(handles.axes2,'off');
         case 6
             % --- “Ù—π«˙œﬂ
             audio_db=20*log10(abs(handles.Sample));% «Û“Ù—π
@@ -52,6 +54,5 @@ if ~isempty(handles.Sample)
             xlabel(handles.axes1,' ±º‰(s)');
             ylabel(handles.axes1,'“Ù—π(DB)');
     end
-    grid on;
 end
     
