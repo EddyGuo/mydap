@@ -130,7 +130,7 @@ set(handles.timeinfo_text,'String',['时长：',num2str(t),'s']);
 set(handles.fsinfo_text,'String',['采样率：',num2str(handles.Fs),'Hz']);
 
 % plot wave
-audio_analyze(handles);
+audio_analyze(handles.Sample,handles.Fs,handles.axes1,handles);
 
 % --- 播放按钮
 function play_pushbutton_Callback(hObject, eventdata, handles)
@@ -163,7 +163,7 @@ end
 
 % --- 波形选择栏
 function wave_select_listbox_Callback(hObject, eventdata, handles)
-audio_analyze(handles);
+audio_analyze(handles.Sample,handles.Fs,handles.axes1,handles);
 
 function wave_select_listbox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -197,10 +197,8 @@ set(handles.record_stop_pushbutton,'enable','off');
 set(handles.putfile_pushbutton,'enable','on');
 set(handles.playstate_text,'String','状态栏>');
 
-
 function putfile_pushbutton_Callback(hObject, eventdata, handles)
 putfile(handles.Sample); % 输出音频
-
 
 function nmean_edit_Callback(hObject, eventdata, handles)
 
@@ -212,9 +210,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 function dmean_edit_Callback(hObject, eventdata, handles)
-
 
 function dmean_edit_CreateFcn(hObject, eventdata, handles)
 
@@ -224,9 +220,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 function dvar_edit_Callback(hObject, eventdata, handles)
-
 
 function dvar_edit_CreateFcn(hObject, eventdata, handles)
 
@@ -236,9 +230,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 function nvar_edit_Callback(hObject, eventdata, handles)
-
 
 function nvar_edit_CreateFcn(hObject, eventdata, handles)
 
