@@ -2,11 +2,6 @@ function audio_analyze(sample,fs,ax,handles)
 % --- plot wave
 wavetype=get(handles.wave_select_listbox,'value');
 if ~isempty(sample)
-    nvar=std(sample);
-    set(handles.nvar_edit,'String',nvar);
-    nmean=mean(sample);
-    set(handles.nmean_edit,'String',nmean);
-    
     sample_length=length(sample);
     t=(0:sample_length-1)/fs;
     nfft=pow2(nextpow2(sample_length));% fft点数，基2fft取2的幂次方提高速度

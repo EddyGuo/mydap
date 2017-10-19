@@ -16,6 +16,7 @@ else
     gui_mainfcn(gui_State, varargin{:});
 end
 
+
 % --- Executes just before dsp is made visible.
 function dsp_OpeningFcn(hObject, eventdata, handles, varargin)
 
@@ -30,7 +31,6 @@ set(gcf,'defaultAxesXGrid','on', ...
 % 初始化
 movegui(gcf,'center');
 handles.Sample=[];
-handles.index=0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -79,7 +79,8 @@ else
     if samplesize(2)>1
         handles.Sample=handles.Sample(:,1);
     end
-    handles.player=audioplayer(handles.Sample,handles.Fs);
+    handles.CSample=handles.Sample;% 创建副本
+    handles.player=audioplayer(handles.CSample,handles.Fs);
     setplayer(handles);
     
     set(handles.play_pushbutton,'enable','on');
@@ -111,8 +112,8 @@ guidata(hObject,handles);
 function record_stop_pushbutton_Callback(hObject, eventdata, handles)
 stop(handles.recObj);% 停止录音
 handles.Sample=getaudiodata(handles.recObj);% 获取录音
-handles.index=handles.index+1;
-handles.player=audioplayer(handles.Sample,handles.Fs);
+handles.CSample=handles.Sample;% 创建副本
+handles.player=audioplayer(handles.CSample,handles.Fs);
 setplayer(handles);
 
 guidata(hObject,handles);
@@ -124,13 +125,24 @@ set(handles.player,'StartFcn',{@playstart_Callback,handles}, ...
     'StopFcn',{@playstop_Callback,handles});
 
 % 音频信息
-sample_length=length(handles.Sample);
+sample_length=length(handles.Sample); % 音频时长
 t=sample_length/handles.Fs;
-set(handles.timeinfo_text,'String',['时长：',num2str(t),'s']);
-set(handles.fsinfo_text,'String',['采样率：',num2str(handles.Fs),'Hz']);
+set(handles.timeinfo_text,'String',['时长：',num2str(t),'s']); % 显示时长
+set(handles.fsinfo_text,'String',['采样率：',num2str(handles.Fs),'Hz']); % 显示采样率
 
 % plot wave
-audio_analyze(handles.Sample,handles.Fs,handles.axes1,handles);
+audio_analyze(handles.Sample,handles.Fs,handles.axes1,handles); % 绘制初始样本
+audio_analyze(handles.CSample,handles.Fs,handles.axes2,handles);% 绘制样本副本
+
+nvar=std(handles.Sample).^2; % 初始方差
+set(handles.nvar_edit,'String',round(nvar,3,'significant'));
+nmean=mean(handles.Sample); % 初始均值
+set(handles.nmean_edit,'String',round(nmean,3,'significant'));
+dvar=std(handles.CSample).^2; % 样本方差
+set(handles.dvar_edit,'String',round(dvar,3,'significant'));
+dmean=mean(handles.CSample); % 样本均值
+set(handles.dmean_edit,'String',round(dmean,3,'significant'));
+
 
 % --- 播放按钮
 function play_pushbutton_Callback(hObject, eventdata, handles)
@@ -164,6 +176,7 @@ end
 % --- 波形选择栏
 function wave_select_listbox_Callback(hObject, eventdata, handles)
 audio_analyze(handles.Sample,handles.Fs,handles.axes1,handles);
+audio_analyze(handles.CSample,handles.Fs,handles.axes2,handles);
 
 function wave_select_listbox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -197,6 +210,7 @@ set(handles.record_stop_pushbutton,'enable','off');
 set(handles.putfile_pushbutton,'enable','on');
 set(handles.playstate_text,'String','状态栏>');
 
+% --- 输出音频
 function putfile_pushbutton_Callback(hObject, eventdata, handles)
 putfile(handles.Sample); % 输出音频
 
@@ -233,6 +247,43 @@ end
 function nvar_edit_Callback(hObject, eventdata, handles)
 
 function nvar_edit_CreateFcn(hObject, eventdata, handles)
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function denoise_pushbutton_Callback(hObject, eventdata, handles)
+
+% --- 音量调节
+function volume_slider_Callback(hObject, eventdata, handles)
+val=round(get(hObject,'Value'),2);
+volume=10^(val/20); %获取音量
+set(handles.volume_edit,'String',['+',num2str(val),' dB']);
+if isempty(handles.Sample)==0
+    handles.CSample=handles.Sample.*volume; % 音量调节
+    handles.player=audioplayer(handles.CSample,handles.Fs);
+    setplayer(handles);
+    
+    guidata(hObject,handles);
+end
+
+function volume_slider_CreateFcn(hObject, eventdata, handles)
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+% --- 显示音量
+function volume_edit_Callback(hObject, eventdata, handles)
+str=get(hObject,'String');
+val=str(isstrprop(str,'digit'));% 读取数字
+set(handles.volume_slider,'Value',str2double(val));
+
+function volume_edit_CreateFcn(hObject, eventdata, handles)
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
