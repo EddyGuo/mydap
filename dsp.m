@@ -311,3 +311,12 @@ function volume_edit_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+function reset_pushbutton_Callback(hObject, eventdata, handles)
+handles.CSample=handles.Sample;
+handles.player=audioplayer(handles.CSample,handles.Fs);
+setplayer(handles);
+set(handles.volume_slider,'Value',0);
+set(handles.volume_edit,'String',['+0 dB']);
+guidata(hObject,handles);
