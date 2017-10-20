@@ -1,4 +1,5 @@
 function varargout = putfile(varargin)
+% --- 输出音频
 % PUTFILE MATLAB code for putfile.fig
 %      PUTFILE, by itself, creates a new PUTFILE or raises the existing
 %      singleton*.
@@ -53,6 +54,16 @@ function putfile_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to putfile (see VARARGIN)
 movegui(gcf,'center');
 handles.putSample=varargin{1}; %保存输入
+% 初始化采样率为输入音频采样率
+handles.putFs=varargin{2};
+str=get(handles.Fs_popupmenu,'String');
+for val=1:5
+    if str2double(str{val})==handles.putFs
+        break
+    end
+end
+set(handles.Fs_popupmenu,'Value',val);
+
 % Update handles structure
 guidata(hObject, handles);
 

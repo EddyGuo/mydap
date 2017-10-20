@@ -1,4 +1,5 @@
 function varargout = dsp(varargin)
+% --- 数字音频分析与处理系统
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
     'gui_Singleton',  gui_Singleton, ...
@@ -215,7 +216,7 @@ set(handles.playstate_text,'String','状态栏>');
 
 % --- 输出音频
 function putfile_pushbutton_Callback(hObject, eventdata, handles)
-putfile(handles.CSample); % 输出音频
+putfile(handles.CSample,handles.Fs); % 输出音频
 
 function nmean_edit_Callback(hObject, eventdata, handles)
 
