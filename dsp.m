@@ -29,8 +29,11 @@ set(gcf,'defaultAxesXGrid','on', ...
     'defaultAxesZGrid','on');
 
 % 初始化
-movegui(gcf,'center');
-handles.Sample=[];
+movegui(gcf,'center'); % figure居中
+handles.Sample=[]; % 初始化样本为空
+handles.CSample=[]; % 初始化样本副本
+handles.volume=0; % 初始化音量为0
+handles.Fs=0; % 初始化采样率
 
 % Update handles structure
 guidata(hObject, handles);
@@ -212,7 +215,7 @@ set(handles.playstate_text,'String','状态栏>');
 
 % --- 输出音频
 function putfile_pushbutton_Callback(hObject, eventdata, handles)
-putfile(handles.Sample); % 输出音频
+putfile(handles.CSample); % 输出音频
 
 function nmean_edit_Callback(hObject, eventdata, handles)
 
@@ -254,21 +257,30 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+% --- 谱减法去噪
+function sub_denoise_pushbutton_Callback(hObject, eventdata, handles)
+handles.CSample=specsub(handles.CSample,handles.Fs);
+handles.player=audioplayer(handles.CSample,handles.Fs);
+setplayer(handles);
 
-function denoise_pushbutton_Callback(hObject, eventdata, handles)
+guidata(hObject,handles);
+
 
 % --- 音量调节
+% --- 这里用音量的改变（差值）增加/减小音量
 function volume_slider_Callback(hObject, eventdata, handles)
 val=round(get(hObject,'Value'),2);
-volume=10^(val/20); %获取音量
+dval=val-handles.volume; %求音量相对值
+handles.volume=val; %保存数值
+volume=10^(dval/20); % 获取相对音量
 set(handles.volume_edit,'String',['+',num2str(val),' dB']);
 if isempty(handles.Sample)==0
-    handles.CSample=handles.Sample.*volume; % 音量调节
+    handles.CSample=handles.CSample.*volume; % 音量调节
     handles.player=audioplayer(handles.CSample,handles.Fs);
     setplayer(handles);
-    
-    guidata(hObject,handles);
 end
+
+ guidata(hObject,handles);
 
 function volume_slider_CreateFcn(hObject, eventdata, handles)
 
@@ -281,7 +293,16 @@ end
 function volume_edit_Callback(hObject, eventdata, handles)
 str=get(hObject,'String');
 val=str(isstrprop(str,'digit'));% 读取数字
-set(handles.volume_slider,'Value',str2double(val));
+val=str2double(val);
+if val<0
+    val=0;
+end
+if val>20
+    val=20;
+end
+% 矫正输入
+set(handles.volume_edit,'String',['+',num2str(val),' dB']);
+set(handles.volume_slider,'Value',val);
 
 function volume_edit_CreateFcn(hObject, eventdata, handles)
 

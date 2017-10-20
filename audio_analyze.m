@@ -42,10 +42,11 @@ if ~isempty(sample)
         case 5
             % --- ÆÙ²¼ÆµÆ×Í¼
             axes(ax);
-            hammingwin=2^floor(log2(sample_length))/8;
-            spectrogram(sample,hammingwin,hammingwin/2,nfft,fs);
+            spectrogram(sample,1024,512,nfft,fs);
+            %hammingwin=2^floor(log2(sample_length))/8;
+            %spectrogram(sample,hammingwin,hammingwin/2,nfft,fs);
             colorbar(ax);
-            colormap(hot);
+            %colormap(hot);
             %colorbar(handles.axes2,'off');
         case 6
             % --- ÒôÑ¹ÇúÏß
