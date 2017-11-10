@@ -25,9 +25,9 @@ function dsp_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 % 设置坐标轴
-set(gcf,'defaultAxesXGrid','on', ...
-    'defaultAxesYGrid','on', ...
-    'defaultAxesZGrid','on');
+set(gcf,'defaultAxesXGrid','off', ...
+    'defaultAxesYGrid','off', ...
+    'defaultAxesZGrid','off');
 
 % 初始化
 movegui(gcf,'center'); % figure居中
@@ -302,8 +302,17 @@ if val>20
     val=20;
 end
 % 矫正输入
+dval=val-handles.volume; %求音量相对值
+handles.volume=val; %保存数值
+volume=10^(dval/20); % 获取相对音量
 set(handles.volume_edit,'String',['+',num2str(val),' dB']);
+if isempty(handles.Sample)==0
+    handles.CSample=handles.CSample.*volume; % 音量调节
+    handles.player=audioplayer(handles.CSample,handles.Fs);
+    setplayer(handles);
+end
 set(handles.volume_slider,'Value',val);
+guidata(hObject,handles);
 
 function volume_edit_CreateFcn(hObject, eventdata, handles)
 
@@ -319,5 +328,5 @@ handles.CSample=handles.Sample;
 handles.player=audioplayer(handles.CSample,handles.Fs);
 setplayer(handles);
 set(handles.volume_slider,'Value',0);
-set(handles.volume_edit,'String',['+0 dB']);
+set(handles.volume_edit,'String','+0 dB');
 guidata(hObject,handles);
