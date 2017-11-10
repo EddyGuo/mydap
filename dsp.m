@@ -36,6 +36,11 @@ handles.CSample=[]; % 初始化样本副本
 handles.volume=0; % 初始化音量为0
 handles.Fs=0; % 初始化采样率
 
+if (exist('speech_database.dat')==2)
+load('speech_database.dat','-mat');
+handles.data=data;
+end
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -330,3 +335,13 @@ setplayer(handles);
 set(handles.volume_slider,'Value',0);
 set(handles.volume_edit,'String','+0 dB');
 guidata(hObject,handles);
+
+
+function insert_prt_pushbutton_Callback(hObject, eventdata, handles)
+[handles.data,handles.answer]=insertvoice(handles.CSample,handles.Fs);
+guidata(hObject,handles);
+
+function select_speech_pushbutton_Callback(hObject, eventdata, handles)
+recogvoice(handles.CSample,handles.Fs,handles.data);
+
+function delete_data_pushbutton_Callback(hObject, eventdata, handles)
