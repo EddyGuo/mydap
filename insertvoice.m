@@ -1,6 +1,6 @@
-function [data,answer]=insertvoice(sample,fs)
+function [data]=insertvoice(sample,fs)
 % --- ÉùÎÆÂ¼Èë
-addpath('voicerecog');
+addpath('voicerecog')
 filt=melfilter(150,300,15);
 fr1=frm(sample,16,fs,1);
 mc2=train(fr1,filt,20);

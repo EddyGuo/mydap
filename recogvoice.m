@@ -1,5 +1,5 @@
 function recogvoice(sample,fs,data)
-% --- 声纹识别
+% 声纹识别
 addpath('voicerecog');
 if (exist('speech_database.dat')==2)
     load('speech_database.dat','-mat');
@@ -76,14 +76,14 @@ if (exist('speech_database.dat')==2)
     if or((p2>-25),b==n)
         nm=data(b).name;
         message=strcat('说话人是： ',nm);
-        msgbox(message,'DataBase Info','help');
+        msgbox(message,'数据信息','help');
     else
         message='说话人是：陌生人';
-        msgbox(message,'DataBase Info','help');
+        msgbox(message,'数据信息','help');
     end
 else
     message='未录入声纹，请录入！';
-    msgbox(message,'speech DataBase Error','warn');
+    msgbox(message,'数据错误','warn');
 end
 
 end

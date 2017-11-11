@@ -338,12 +338,15 @@ guidata(hObject,handles);
 
 % --- 录入声纹
 function insert_prt_pushbutton_Callback(hObject, eventdata, handles)
-[handles.data,handles.answer]=insertvoice(handles.CSample,handles.Fs);
+[handles.data]=insertvoice(handles.CSample,handles.Fs);
 guidata(hObject,handles);
 
 % --- 识别声纹
 function select_speech_pushbutton_Callback(hObject, eventdata, handles)
 recogvoice(handles.CSample,handles.Fs,handles.data);
+guidata(hObject,handles);
 
 % --- 删除数据
 function delete_data_pushbutton_Callback(hObject, eventdata, handles)
+deletedata(handles.data);
+guidata(hObject,handles);
