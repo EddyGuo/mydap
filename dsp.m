@@ -327,7 +327,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
+% --- 重置
 function reset_pushbutton_Callback(hObject, eventdata, handles)
 handles.CSample=handles.Sample;
 handles.player=audioplayer(handles.CSample,handles.Fs);
@@ -336,12 +336,14 @@ set(handles.volume_slider,'Value',0);
 set(handles.volume_edit,'String','+0 dB');
 guidata(hObject,handles);
 
-
+% --- 录入声纹
 function insert_prt_pushbutton_Callback(hObject, eventdata, handles)
 [handles.data,handles.answer]=insertvoice(handles.CSample,handles.Fs);
 guidata(hObject,handles);
 
+% --- 识别声纹
 function select_speech_pushbutton_Callback(hObject, eventdata, handles)
 recogvoice(handles.CSample,handles.Fs,handles.data);
 
+% --- 删除数据
 function delete_data_pushbutton_Callback(hObject, eventdata, handles)
