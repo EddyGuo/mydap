@@ -338,15 +338,29 @@ guidata(hObject,handles);
 
 % --- 录入声纹
 function insert_prt_pushbutton_Callback(hObject, eventdata, handles)
-[handles.data]=insertvoice(handles.CSample,handles.Fs);
-guidata(hObject,handles);
+if(~isempty(handles.CSample))
+    [handles.data]=insertvoice(handles.CSample,handles.Fs);
+    guidata(hObject,handles);
+else
+    message='请录入声音！';
+    msgbox(message,'数据错误','warn');
+end
 
 % --- 识别声纹
 function select_speech_pushbutton_Callback(hObject, eventdata, handles)
-recogvoice(handles.CSample,handles.Fs,handles.data);
-guidata(hObject,handles);
+if (exist('speech_database.dat')==2)
+    recogvoice(handles.CSample,handles.Fs,handles.data);
+    guidata(hObject,handles);
+else
+    message='未录入声纹，请录入！';
+    msgbox(message,'数据错误','warn');
+end
 
 % --- 删除数据
 function delete_data_pushbutton_Callback(hObject, eventdata, handles)
-deletedata(handles.data);
-guidata(hObject,handles);
+if (exist('speech_database.dat')==2)
+    deletedata(handles.data);
+    guidata(hObject,handles);
+else
+    warndlg('数据库为空','警告');
+end

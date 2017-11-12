@@ -1,5 +1,5 @@
-%利用最大似然概率寻找输入数据的高斯模型
 function  pr=ident2(mc,filt,cdbk,p)
+% --- 利用最大似然概率寻找输入数据的高斯模型
 l=length(mc(1,:));
 nosp=length(cdbk);
 pr(nosp)=0;

@@ -1,5 +1,5 @@
-%给出混合高斯模型的初始值：均值，方差，系数
 function [init_m,init_s,init_p] = init(mfcc,mogs)
+% --- 给出混合高斯模型的初始值：均值，方差，系数
 dim_x=(mogs);
 dim_y=length(mfcc(:,1));
 init_m(dim_y,dim_x)=0;

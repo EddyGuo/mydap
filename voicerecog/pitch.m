@@ -1,12 +1,7 @@
-%由自相关法求取基音周期
-%clear all
 function s=pitch(sample)
-%读取语音信号，原始语音采样频率为96000Hz
-%[filename,filepath]=uigetfile('*.wav');
+% --- 由自相关法求取基音周期
 signal=sample;
 signal=trim(signal);
-%下采样到9.6kHZ(实际语音信号处理中fs通常取7-10kHz)
-%signal=decimate(signal,10);
 
 %分帧
 FrameLen = 450;

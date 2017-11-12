@@ -1,5 +1,5 @@
-%预处理，去掉没有声音的部分，降噪，分帧
 function fr=frm(sample,duration,fs,x)
+% ---预处理，去掉没有声音的部分，降噪，分帧
 fs=1000*round(fs/1000);
 nsig=sample;
 sig=trim(nsig);

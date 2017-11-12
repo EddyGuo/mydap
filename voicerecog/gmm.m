@@ -1,5 +1,5 @@
-%利用E-M算法建立混合高斯模型
 function [im,is,ip,times]=gmm(nim,nis,nip,data)
+% --- 利用E-M算法建立混合高斯模型
 im=nim;
 is=nis;
 ip=nip;

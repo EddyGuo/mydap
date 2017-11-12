@@ -1,4 +1,3 @@
-
 function trimmedX = trim(x)
 %Author:        Olutope Foluso Omogbenigun
 %Email:         olutopeomogbenigun at hotmail.com
