@@ -37,8 +37,15 @@ handles.volume=0; % 初始化音量为0
 handles.Fs=0; % 初始化采样率
 
 if (exist('speech_database.dat')==2)
-load('speech_database.dat','-mat');
-handles.data=data;
+    load('speech_database.dat','-mat');
+    handles.data=data;
+    
+    len=length(handles.data);
+    for i=1:len
+        c(i,1)={i};
+        c(i,2)={handles.data(i).name};
+    end
+    set(handles.data_uitable,'Data',c);
 end
 
 % Update handles structure
@@ -72,8 +79,8 @@ end
 
 % --- 文件输入音频
 function file_choose_pushbutton_Callback(hObject, eventdata, handles)
-[filename,pathname]=uigetfile({'*.wav;*.mp3;*.flac', ...
-    '音频文件(*.wav,*.mp3,*.flac)'},'选择文件');%弹出选择文件窗口
+[filename,pathname]=uigetfile({'*.wav;*.mp3;*.flac;*.m4a', ...
+    '音频文件(*.wav,*.mp3,*.flac,*.m4a)'},'选择文件');%弹出选择文件窗口
 % 判断文件为空
 % 不能使用if isempty(filename)||isempty(pathname)
 % 取消窗口时会报错，取消时uigetfile返回filename为0
@@ -190,7 +197,7 @@ audio_analyze(handles.CSample,handles.Fs,handles.axes2,handles);
 function wave_select_listbox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
-end 
+end
 
 % --- 播放开始
 function playstart_Callback(hObject,eventdata,handles)
@@ -265,11 +272,15 @@ end
 
 % --- 谱减法去噪
 function sub_denoise_pushbutton_Callback(hObject, eventdata, handles)
-handles.CSample=specsub(handles.CSample,handles.Fs);
-handles.player=audioplayer(handles.CSample,handles.Fs);
-setplayer(handles);
-
-guidata(hObject,handles);
+if(~isempty(handles.CSample))
+    handles.CSample=specsub(handles.CSample,handles.Fs); % 谱减法去噪
+    handles.player=audioplayer(handles.CSample,handles.Fs);
+    setplayer(handles);
+    
+    guidata(hObject,handles);
+else
+    warndlg('请录入声音','警告');
+end
 
 
 % --- 音量调节
@@ -286,7 +297,7 @@ if isempty(handles.Sample)==0
     setplayer(handles);
 end
 
- guidata(hObject,handles);
+guidata(hObject,handles);
 
 function volume_slider_CreateFcn(hObject, eventdata, handles)
 
@@ -329,37 +340,50 @@ end
 
 % --- 重置
 function reset_pushbutton_Callback(hObject, eventdata, handles)
-handles.CSample=handles.Sample;
-handles.player=audioplayer(handles.CSample,handles.Fs);
-setplayer(handles);
-set(handles.volume_slider,'Value',0);
-set(handles.volume_edit,'String','+0 dB');
-guidata(hObject,handles);
+if(~isempty(handles.CSample))
+    handles.CSample=handles.Sample; % 重置样本
+    handles.player=audioplayer(handles.CSample,handles.Fs);
+    setplayer(handles);
+    set(handles.volume_slider,'Value',0); % 重置音量
+    set(handles.volume_edit,'String','+0 dB');
+    guidata(hObject,handles);
+else
+    warndlg('请录入声音','警告');
+end
 
 % --- 录入声纹
 function insert_prt_pushbutton_Callback(hObject, eventdata, handles)
 if(~isempty(handles.CSample))
-    [handles.data]=insertvoice(handles.CSample,handles.Fs);
+    [handles.data]=insertvoice(handles.CSample,handles.Fs); % 录入声纹
+    len=length(handles.data);
+    for i=1:len
+        c(i,1)={i};
+        c(i,2)={handles.data(i).name};
+    end
+    set(handles.data_uitable,'Data',c);
     guidata(hObject,handles);
 else
-    message='请录入声音！';
-    msgbox(message,'数据错误','warn');
+    warndlg('请录入声音','警告');
 end
 
 % --- 识别声纹
 function select_speech_pushbutton_Callback(hObject, eventdata, handles)
-if (exist('speech_database.dat')==2)
-    recogvoice(handles.CSample,handles.Fs,handles.data);
-    guidata(hObject,handles);
+if(~isempty(handles.CSample))
+    if (exist('speech_database.dat')==2)
+        recogvoice(handles.CSample,handles.Fs,handles.data); % 识别声纹
+        guidata(hObject,handles);
+    else
+        warndlg('未录入声纹，请录入！','警告');
+    end
 else
-    message='未录入声纹，请录入！';
-    msgbox(message,'数据错误','warn');
+    warndlg('请录入声音','警告');
 end
 
 % --- 删除数据
 function delete_data_pushbutton_Callback(hObject, eventdata, handles)
 if (exist('speech_database.dat')==2)
-    deletedata(handles.data);
+    c=deletedata(handles.data); % 删除声纹
+    set(handles.data_uitable,'Data',c);
     guidata(hObject,handles);
 else
     warndlg('数据库为空','警告');
