@@ -5,7 +5,8 @@ button = questdlg('你想删除哪一个说话人',...
     '所有','选定','取消','取消');
 switch button
     case '所有'
-        delete('speech_database.dat');
+        delete('speech_database.mat');
+        c=cell(0,0);
         msgbox('成功删除数据','删除所有','help');
     case '选定'
         prompt={'输入你想要删除的说话人'};
@@ -25,12 +26,8 @@ switch button
             else
                 data(b)=[];
                 speaker_number=length(data);
-                save('speech_database.dat','data','speaker_number','-append');
-                len=length(data);
-                for i=1:len
-                    c(i,1)={i};
-                    c(i,2)={data(i).name};
-                end
+                save('speech_database.mat','data','speaker_number','-append');
+                c=data2cell(data);
                 message=strcat('成功删除说话人：',answer{1,1});
                 msgbox(message,'','help');
             end

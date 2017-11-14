@@ -36,17 +36,14 @@ handles.CSample=[]; % 初始化样本副本
 handles.volume=0; % 初始化音量为0
 handles.Fs=0; % 初始化采样率
 
-if (exist('speech_database.dat')==2)
-    load('speech_database.dat','-mat');
+if (exist('speech_database.mat','file')==2)
+    load('speech_database.mat','-mat');
     handles.data=data;
-    
-    len=length(handles.data);
-    for i=1:len
-        c(i,1)={i};
-        c(i,2)={handles.data(i).name};
-    end
-    set(handles.data_uitable,'Data',c);
+    c=data2cell(handles.data);
+else
+    c=cell(0,0);
 end
+set(handles.data_uitable,'Data',c);
 
 % Update handles structure
 guidata(hObject, handles);
@@ -355,11 +352,7 @@ end
 function insert_prt_pushbutton_Callback(hObject, eventdata, handles)
 if(~isempty(handles.CSample))
     [handles.data]=insertvoice(handles.CSample,handles.Fs); % 录入声纹
-    len=length(handles.data);
-    for i=1:len
-        c(i,1)={i};
-        c(i,2)={handles.data(i).name};
-    end
+    c=data2cell(handles.data);
     set(handles.data_uitable,'Data',c);
     guidata(hObject,handles);
 else
@@ -369,7 +362,7 @@ end
 % --- 识别声纹
 function select_speech_pushbutton_Callback(hObject, eventdata, handles)
 if(~isempty(handles.CSample))
-    if (exist('speech_database.dat')==2)
+    if (exist('speech_database.mat','file')==2)
         recogvoice(handles.CSample,handles.Fs,handles.data); % 识别声纹
         guidata(hObject,handles);
     else
@@ -381,10 +374,10 @@ end
 
 % --- 删除数据
 function delete_data_pushbutton_Callback(hObject, eventdata, handles)
-if (exist('speech_database.dat')==2)
+if (exist('speech_database.mat','file')==2)
     c=deletedata(handles.data); % 删除声纹
     set(handles.data_uitable,'Data',c);
-    guidata(hObject,handles);
+    guidata(hObject,handles)
 else
     warndlg('数据库为空','警告');
 end

@@ -1,21 +1,24 @@
 function recogvoice(sample,fs,data)
 % --- 声纹识别
 addpath('voicerecog');
+hwait=waitbar(0,'正在识别声纹...');
 filt=melfilter(150,300,15);
 fr=frm(sample,16,fs,1);
+waitbar(0.2,hwait);
 l=length(fr(1,:));
 nosp=length(data);
 k=0;
-b=0;
 r=nosp;
 while(r~=1)
     r=floor(r/2);
     k=k+1;
 end
+waitbar(0.4,hwait);
 p(2,nosp)=0;p(1,1)=0;
 for i=1:nosp
     p(2,i)=i;
 end
+waitbar(0.6,hwait);
 mc4=train(fr,filt,20);
 mc4=mc4(3:18,:);
 mc=banshengsin(mc4);
@@ -45,6 +48,7 @@ else
         frameparts(i).frame(coff,y)=0;
     end
 end
+waitbar(0.8,hwait);
 for r=1:k
     count=1;
     for i=r:k:l
@@ -52,7 +56,6 @@ for r=1:k
         count=count+1;
     end
 end
-c=length(data);
 for  i=1:k
     % tic
     p1=ident2(frameparts(i).frame,filt,data,p);
@@ -73,11 +76,12 @@ end
 b=p(2,1);
 if or((p2>-25),b==n)
     nm=data(b).name;
-    message=strcat('说话人是： ',nm);
-    msgbox(message,'数据信息','help');
+    waitbar(1,hwait,['识别成功，说话人是：',nm]);
+    pause(4);
 else
-    message='说话人是：陌生人';
-    msgbox(message,'数据信息','help');
+    waitbar(1,hwait,'识别成功，说话人是：陌生人');
+    pause(4);
 end
+close(hwait);
 end
 
